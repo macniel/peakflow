@@ -1,0 +1,27 @@
+{
+  "name": "peakflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/macniel/peakflow.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/macniel/peakflow/issues"
+  },
+  "homepage": "https://github.com/macniel/peakflow#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "web3": "^1.2.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.19.0"
+  }
+}

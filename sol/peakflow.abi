@@ -1,0 +1,211 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "addPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "schluessel",
+				"type": "string"
+			}
+		],
+		"name": "addSchluessel",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "berechtigeLungenarzt",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "registerLungenarzt",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "registerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "maxwert",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaxwert",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			},
+			{
+				"name": "sollwert",
+				"type": "uint256"
+			}
+		],
+		"name": "setSollwert",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getPatientenAdressListe",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "getSchluessel",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "lungenaerzte",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			},
+			{
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "patienten",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			},
+			{
+				"name": "lungenarztAdresse",
+				"type": "address"
+			},
+			{
+				"name": "sollwert",
+				"type": "uint256"
+			},
+			{
+				"name": "maxwert",
+				"type": "uint256"
+			},
+			{
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

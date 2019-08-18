@@ -1,0 +1,30 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Newt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./resources/main.css" />
+    <script src="http://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+    <script type="module" src="./resources/main.mjs"></script>
+
+</head>
+<body>
+    <main-app></main-app>
+
+    <fieldset>
+        <legend>Wallet Adress</legend>
+    <input id="wallet"><button onclick="setWallet()">set Wallet Adress</button>
+    </fieldset>
+    <script>
+    
+        setWallet = () => {
+            if ( document.getElementById('wallet').value != '' ) {
+                document.querySelector('main-app').setAttribute('wallet', document.getElementById('wallet').value);
+            }
+        }
+
+    </script>
+</body>
+</html>

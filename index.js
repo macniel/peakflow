@@ -9,7 +9,7 @@ var privateKey = fs.readFileSync(path.join(__dirname, 'server.key'), 'utf8');
 var certificate = fs.readFileSync(path.join(__dirname, '\server.cert'), 'utf8');
 var credentials = {key: privateKey, cert: certificate};
 
-const contractAddress = '0x06A8D9c857F5b83cEccdD9171A350cb51295e75c';
+const contractAddress = '0x82e70519cd51dd635c844b4056435258f7abaa9a';
 const contractAbi = JSON.parse(fs.readFileSync('./sol/peakflow.abi'));
 console.log('contract ABI loaded');
 
@@ -21,7 +21,6 @@ const peakflow = new w3.eth.Contract(contractAbi, contractAddress);
 console.log('Connected to rinkeby and created contract interface');
 
 app.get('/api/balance', async (req, res) => {
-    console.log('GET: get Balance');
     const walletAddress = req.query['wallet'];
     if ( walletAddress != null ) {
     const balance = await w3.eth.getBalance(walletAddress);
@@ -32,18 +31,26 @@ app.get('/api/balance', async (req, res) => {
 });
 
 app.get('/api/patienten', async (req, res) => {
-
-    console.log('GET: get patienten');
     const from = req.query.wallet;
-    let patienten = await peakflow.methods.getPatientenAdressListe().call();
-    console.log(patienten);
-    res.send(JSON.stringify([]));
+    let patienten = await peakflow.methods.getPatientenAdressListeVonLungenarzt(from).call();
+    console.log('get patients>', patienten);
+    res.send(JSON.stringify(patienten));
 });
 app.use(bodyParser.json());
 app.post('/api/patienten', async(req, res) => {
-    console.log(req.body.address, req.query.wallet);
-    let result = await peakflow.methods.addPatient({adresse: req.body.patientAdresse}).call();
-    console.log(result);
+    const from = req.query.wallet;
+    let result = await peakflow.methods.addPatientToAddressListeVonLungenarzt(from, req.body.address).call();
+    console.log('add patient>', result);
+    res.send(JSON.stringify(result));
+});
+
+app.use(bodyParser.json());
+app.post('/api/register', async(req, res) => {
+    const patient = req.body.address;
+    const name = req.body.name;
+    let result = await peakflow.methods.registerPatient(name, patient).call();
+    console.log('register patient>', result);
+    res.send(JSON.stringify(result));
 });
 
 app.use('/', express.static('./public'));

@@ -3,11 +3,15 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "adresse",
+				"name": "lungenarzt",
+				"type": "address"
+			},
+			{
+				"name": "patient",
 				"type": "address"
 			}
 		],
-		"name": "addPatient",
+		"name": "addPatientToAddressListeVonLungenarzt",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -17,25 +21,15 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "schluessel",
-				"type": "string"
-			}
-		],
-		"name": "addSchluessel",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
+				"name": "patient",
+				"type": "address"
+			},
 			{
-				"name": "adresse",
+				"name": "lungenarzt",
 				"type": "address"
 			}
 		],
-		"name": "berechtigeLungenarzt",
+		"name": "berechtigeLungenarztFuerPatient",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -81,11 +75,15 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "maxwert",
-				"type": "uint256"
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "schluessel",
+				"type": "string"
 			}
 		],
-		"name": "setMaxwert",
+		"name": "setDBSchluesselFuerPatient",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -95,7 +93,25 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "adresse",
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "maxwert",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaxwertFuerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "patient",
 				"type": "address"
 			},
 			{
@@ -103,7 +119,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "setSollwert",
+		"name": "setSollwertFuerPatient",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -111,12 +127,17 @@
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "getPatientenAdressListe",
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "getDBSchluesselFuerPatient",
 		"outputs": [
 			{
 				"name": "",
-				"type": "address[]"
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -127,15 +148,15 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "adresse",
+				"name": "lungenarzt",
 				"type": "address"
 			}
 		],
-		"name": "getSchluessel",
+		"name": "getPatientenAdressListeVonLungenarzt",
 		"outputs": [
 			{
 				"name": "",
-				"type": "string[]"
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -161,8 +182,8 @@
 				"type": "address"
 			},
 			{
-				"name": "exists",
-				"type": "bool"
+				"name": "patienten",
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -200,8 +221,8 @@
 				"type": "uint256"
 			},
 			{
-				"name": "exists",
-				"type": "bool"
+				"name": "dbschluessel",
+				"type": "string"
 			}
 		],
 		"payable": false,

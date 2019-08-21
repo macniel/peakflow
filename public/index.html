@@ -14,9 +14,34 @@
     <main-app></main-app>
 
     <fieldset>
+        <legend>Register Patient with System</legend>
+        Name: <input id="addPatientName"><br/>
+        Addresse: <input id="addPatient"><button onclick="registerPatient()">Register</button>
+    </fieldset>
+
+    <fieldset>
         <legend>Wallet Adress</legend>
     <input id="wallet"><button onclick="setWallet()">set Wallet Adress</button>
     </fieldset>
+    <script>
+        registerPatient = () => {
+            console.log('called registerPatient');
+            if ( document.getElementById('addPatient').value != '' ) {
+                return fetch('./api/register', 
+                {
+                    method: 'POST', 
+                    body: JSON.stringify({
+                        address: document.getElementById('addPatient').value,
+                        name: document.getElementById('addPatientName').value
+                    }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json()).then(response => console.log);
+            }
+        }
+    </script>
     <script>
     
         setWallet = () => {

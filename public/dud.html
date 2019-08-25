@@ -1,0 +1,485 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #333;
+            margin: 20px;
+        }
+        * {
+            color: orange;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            line-height: 1;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        button::before {
+            content: '>>>';
+        }
+        button {
+            display: block;
+            cursor: pointer;
+            background-color: black;
+        }
+        .button {
+            cursor: pointer;
+            background-color: black;
+        }
+        .alert {
+            color: #FF3300;
+            padding: 20px 0;
+            display: block;
+        }
+        label {
+            display: block;
+        }
+        input {
+            background-color: black;
+            border-bottom: 1px solid orange;
+            margin-left: 20px;
+        }
+        button[disabled] {
+            color: gray;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js">
+        
+    </script>
+    <div id="status"><strong>Connected as </strong>N/A</div>
+    <div id="console">...</div>
+    <script>
+        
+        function getConsole() {
+            return document.querySelector('#console');
+        }
+
+        function getStatus() {
+            return document.querySelector('#status');
+        }
+
+        const CONTRACT_ADDRESS = '0x848E8b1B22C36D316f5cf5960fC198E19AbDE37f';
+
+        const ABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "lungenarzt",
+				"type": "address"
+			},
+			{
+				"name": "patient",
+				"type": "address"
+			}
+		],
+		"name": "addPatientToAddressListeVonLungenarzt",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "lungenarzt",
+				"type": "address"
+			}
+		],
+		"name": "berechtigeLungenarztFuerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "registerLungenarzt",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "registerPatient",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "schluessel",
+				"type": "string"
+			}
+		],
+		"name": "setDBSchluesselFuerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "maxwert",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaxwertFuerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "patient",
+				"type": "address"
+			},
+			{
+				"name": "sollwert",
+				"type": "uint256"
+			}
+		],
+		"name": "setSollwertFuerPatient",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "adresse",
+				"type": "address"
+			}
+		],
+		"name": "getDBSchluesselFuerPatient",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "lungenarzt",
+				"type": "address"
+			}
+		],
+		"name": "getPatientenAdressListeVonLungenarzt",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "lungenaerzte",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			},
+			{
+				"name": "patienten",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "patienten",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "adresse",
+				"type": "address"
+			},
+			{
+				"name": "lungenarztAdresse",
+				"type": "address"
+			},
+			{
+				"name": "sollwert",
+				"type": "uint256"
+			},
+			{
+				"name": "maxwert",
+				"type": "uint256"
+			},
+			{
+				"name": "dbschluessel",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+    function home() {
+        getConsole().innerHTML = `<h2>Welcome in Contract Analysis</h2><button onclick="go()">Do magic</button>`;
+    }
+    home();
+
+let Contract;
+
+function go(showAll = false) {
+
+            console.log('checking web3...', typeof web3 != undefined );
+            if (typeof web3 !== 'undefined') {
+                web3 = new Web3(web3.currentProvider);
+            } else {
+                // set the provider you want from Web3.providers
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            }
+            console.log('web3 connected', web3);
+            web3.eth.defaultAccount = web3.eth.accounts[0];
+            console.log('web3 account', web3.eth.defaultAccount);
+            Contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+            console.log('contract created', Contract);
+            getConsole().innerHTML = '<h2>Contract has following methods</h2>';
+            
+            for( methodName in Contract.methods ) {
+                if ( showAll || methodName.indexOf('(') != -1 ) {
+                getConsole().innerHTML += `<button data-method-name="${methodName}" onclick="viewMethod('${methodName}')">${methodName}</button>`;
+                }
+            }
+            if ( !showAll ) {
+                getConsole().innerHTML += `<span class="alert">filter detected, <a class="button" onclick="go(true)">click here</a> to unfilter</span>`;
+            }
+            getConsole().innerHTML += `<button onclick="home()">go home</button>`;
+
+
+            web3.eth.getBalance(web3.currentProvider.selectedAddress).then(value => {
+                getStatus().innerHTML = `<strong>Connected as </strong> ${web3.currentProvider.selectedAddress}; <strong>Balance is </strong>${web3.utils.fromWei(value)}`;    
+            })
+            
+
+        }
+
+        async function viewMethod(methodName) {
+            const canonicalMethodName = methodName.replace(/\(.*\)/g, '');
+            const method = ABI.find( predicate => predicate.name === canonicalMethodName);
+            getConsole().innerHTML = `<h2>Analysed Method ${canonicalMethodName}</h2>Listing Method Parameters<br/>`;
+            let index = 0;
+            method.inputs.forEach( input => {
+                getConsole().innerHTML += `<label for="${input.name}">${input.name}</label><input data-param-index="${index}" name="${input.name}"/> (${input.type})<br/>`;
+                index++;
+            });
+            
+            if ( !method.constant ) {
+                getConsole().innerHTML += `<br/><br/><br/><button id="execute" onclick="prepareTransaction('${canonicalMethodName}')">Execute Method with given Parameters</button><br/>`;
+            } else {
+                getConsole().innerHTML += `<br/><br/><br/><button id="execute" onclick="viewTransaction('${canonicalMethodName}')">Execute Method with given Parameters</button><br/>`;
+            }
+            addBackHome();
+            getConsole().querySelectorAll('input').forEach( element => element.addEventListener('change', () => checkValidity() ));
+            checkValidity();
+        }
+
+        function checkValidity() {
+            console.log('checking validity');
+            let enabled = true;
+            
+            document.querySelectorAll('input').forEach( element => {
+                console.log(element, element.value != '');
+                if ( enabled ) {
+                    enabled = element.value != '';
+                }
+            });
+            if ( !enabled ) {
+            document.querySelector('#execute').setAttribute('disabled', true);
+            } else {
+                document.querySelector('#execute').removeAttribute('disabled');
+            }
+        }
+
+        async function viewTransaction(canonicalMethodName) {
+            const methodToCall = Contract.methods[canonicalMethodName];
+            console.log('check existance of method...', methodToCall != undefined);
+            paramArray = [];
+            getConsole().querySelectorAll('input').forEach(input => {
+                paramArray.push(input.value);
+            });
+            const tx = methodToCall(...paramArray);
+            const gasAmount = await tx.estimateGas({from: web3.currentProvider.selectedAddress});
+            try {
+                const value = await tx.call({from: web3.currentProvider.selectedAddress});
+                
+                switch(canonicalMethodName) {
+                    case 'getPatientenAdressListeVonLungenarzt':
+                        renderPatientenListe(value);
+                        break;
+                    default:
+                        renderUnformatted(value);
+            }
+            } catch ( e ) {
+                getConsole.innerHTML = `<h2>Error while calling Method</h2><span class="alert">${e}</span>`;
+            }
+            addBackHome();
+        }
+
+        function renderPatientenListe(value) {
+            getConsole().innerHTML = `<h2>Patienten Liste</h2>`;
+            value.split(';').forEach( patientenAdresse => {
+                getConsole().innerHTML += `&gt;&gt;&gt;<strong>${patientenAdresse}</strong><br/>`;
+            });
+        }
+
+        function renderUnformatted(value) {
+            getConsole().innerHTML = `<h2>Result of ${canonicalMethodName}</h2>${value}`;
+        }
+
+        async function prepareTransaction(canonicalMethodName) {
+            const methodToCall = Contract.methods[canonicalMethodName];
+            console.log('check existance of method...', methodToCall != undefined);
+            paramArray = [];
+            getConsole().querySelectorAll('input').forEach(input => {
+                paramArray.push(input.value);
+            });
+            const tx = methodToCall(...paramArray);
+            const gasAmount = await tx.estimateGas({from: web3.currentProvider.selectedAddress});
+            
+            try {
+                const receipt = await executeTransaction(tx);
+                console.log(receipt);
+                getConsole().innerHTML += `Transaction is confirmed by ${receipt.blockNumber}<br/><br/>This Transaction cost ${web3.utils.fromWei('' + receipt.gasUsed)} Wei<br/>`;
+                addBackHome();
+            } catch ( e ) { 
+                console.error(e) 
+            }
+                 
+        }
+
+        function addBackHome() {
+            getConsole().innerHTML += `<br/><br/><button onclick="go()">Back to Contract</button>`;
+        }
+
+        function executeTransaction(tx) {
+            return new Promise( (resolve, reject) => {
+                getConsole().innerHTML = `<h2>Transaction in progress...</h2>`;
+                tx.send({from: web3.currentProvider.selectedAddress })
+                .once('transactionHash', (hash) => { getConsole().innerHTML += `Transaction ${hash} is underway <br/>`; })
+                .once('receipt', (receipt) => {
+                    resolve(receipt);
+                }).on('error', message => {
+                    getConsole().innerHTML += `<span class="alert">Error while processing...</span>`;
+                    if (message.indexOf('User denied transaction signature') != -1 ) {
+                        getConsole().innerHTML += `<br/><span class="alert">&gt;&gt;&gt;User deined transaction.</span>`;
+                    } else {
+                        console.error(message);
+                    }
+                    
+                    reject(false);
+                })
+            } ) 
+            
+            
+        }
+
+
+    </script>
+</body>
+</html>

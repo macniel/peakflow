@@ -366,18 +366,24 @@ function go(showAll = false) {
             const canonicalMethodName = methodName.replace(/\(.*\)/g, '');
             const method = ABI.find( predicate => predicate.name === canonicalMethodName);
             getConsole().innerHTML = `<h2>Analysed Method ${canonicalMethodName}</h2>Listing Method Parameters<br/>`;
-            method.inputs.forEach( (input, index) => {
-                getConsole().innerHTML += `<label for="${input.name}">${input.name}</label><input data-param-index="${index}" name="${input.name}"/> (${input.type})<br/>`;
-            });
-            
-            if ( !method.constant ) {
-                getConsole().innerHTML += `<br/><br/><br/><button id="execute" onclick="prepareTransaction('${canonicalMethodName}')">Execute Method with given Parameters</button><br/>`;
+            if ( method && method.inputs ) {
+                method.inputs.forEach( (input, index) => {
+                    getConsole().innerHTML += `<label for="${input.name}">${input.name}</label><input data-param-index="${index}" name="${input.name}"/> (${input.type})<br/>`;
+                });
             } else {
+                getConsole().innerHTML += `<span class="alert">Corrupted Method encoutered, continuation terminated.</span>`;
+            }
+            
+            if ( method && !method.constant ) {
+                getConsole().innerHTML += `<br/><br/><br/><button id="execute" onclick="prepareTransaction('${canonicalMethodName}')">Execute Method with given Parameters</button><br/>`;
+            } else if ( method ) {
                 getConsole().innerHTML += `<br/><br/><br/><button id="execute" onclick="viewTransaction('${canonicalMethodName}')">Execute Method with given Parameters</button><br/>`;
             }
             addBackHome();
             getConsole().querySelectorAll('input').forEach( element => element.addEventListener('change', () => checkValidity() ));
-            checkValidity();
+            if ( method ) {
+                checkValidity();
+            }
         }
 
         function checkValidity() {
@@ -409,16 +415,8 @@ function go(showAll = false) {
             try {
                 const value = await tx.call({from: web3.currentProvider.selectedAddress});
                 console.log(canonicalMethodName);
-                switch(canonicalMethodName) {
-                    case 'patienten':
-                        renderPatientDetails(value);
-                        break;
-                    case 'getPatientenAdressListeVonLungenarzt':
-                        renderPatientenListe(value);
-                        break;
-                    default:
-                        renderUnformatted(value, canonicalMethodName);
-            }
+                renderUnformatted(value, canonicalMethodName);
+            
             } catch ( e ) {
                 
                 getConsole().innerHTML = `<h2>Error while calling Method</h2><span class="alert">${e}</span>`;
@@ -426,23 +424,20 @@ function go(showAll = false) {
             addBackHome();
         }
 
-        function renderPatientDetails(value) {
-            getConsole().innerHTML = `<h2>Patient details</h2>`;
-            returnObject = ABI.find( method => method.name === 'patienten');
-            returnObject.outputs.forEach( (output, index) => {
-                getConsole().innerHTML += `<strong>${output.name}</strong><br/>&gt;&gt;&gt;${value[index] ? value[index] : '<span class="alert alert--inline">N/A</span>'}<br/>`;
-            });
-        }
-
-        function renderPatientenListe(value) {
-            getConsole().innerHTML = `<h2>Patienten Liste</h2>`;
-            value.split(';').forEach( patientenAdresse => {
-                getConsole().innerHTML += `&gt;&gt;&gt;<strong>${patientenAdresse}</strong><br/>`;
-            });
-        }
-
         function renderUnformatted(value, canonicalMethodName) {
-            getConsole().innerHTML = `<h2>Result of ${canonicalMethodName}</h2><pre>${JSON.stringify(value, 3)}</pre>`;
+            getConsole().innerHTML = `<h2>Result of ${canonicalMethodName}</h2>`;
+            let returnObject = ABI.find( method => method.name === canonicalMethodName);
+                returnObject.outputs.forEach( (output, index) => {
+                    if ( value && typeof value.indexOf === 'function' && value.indexOf(';') != -1 ) {
+                        value.split(';').forEach( (innerValue, index) => {
+                            getConsole().innerHTML += `<strong>${index}</strong><br/>&gt;&gt;&gt;${innerValue}<br/>`;        
+                        });
+                    } else {
+                        getConsole().innerHTML += `<strong>${output.name ? output.name : index}</strong><br/>&gt;&gt;&gt;${value[index] ? value[index] : '<span class="alert alert--inline">N/A</span>'}<br/>`;
+                    }
+                });
+            
+                
         }
 
         async function prepareTransaction(canonicalMethodName) {

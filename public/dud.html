@@ -37,6 +37,9 @@
             padding: 20px 0;
             display: block;
         }
+        .alert--inline {
+            display: inline;
+        }
         label {
             display: block;
         }
@@ -363,10 +366,8 @@ function go(showAll = false) {
             const canonicalMethodName = methodName.replace(/\(.*\)/g, '');
             const method = ABI.find( predicate => predicate.name === canonicalMethodName);
             getConsole().innerHTML = `<h2>Analysed Method ${canonicalMethodName}</h2>Listing Method Parameters<br/>`;
-            let index = 0;
-            method.inputs.forEach( input => {
+            method.inputs.forEach( (input, index) => {
                 getConsole().innerHTML += `<label for="${input.name}">${input.name}</label><input data-param-index="${index}" name="${input.name}"/> (${input.type})<br/>`;
-                index++;
             });
             
             if ( !method.constant ) {
@@ -407,18 +408,30 @@ function go(showAll = false) {
             const gasAmount = await tx.estimateGas({from: web3.currentProvider.selectedAddress});
             try {
                 const value = await tx.call({from: web3.currentProvider.selectedAddress});
-                
+                console.log(canonicalMethodName);
                 switch(canonicalMethodName) {
+                    case 'patienten':
+                        renderPatientDetails(value);
+                        break;
                     case 'getPatientenAdressListeVonLungenarzt':
                         renderPatientenListe(value);
                         break;
                     default:
-                        renderUnformatted(value);
+                        renderUnformatted(value, canonicalMethodName);
             }
             } catch ( e ) {
-                getConsole.innerHTML = `<h2>Error while calling Method</h2><span class="alert">${e}</span>`;
+                
+                getConsole().innerHTML = `<h2>Error while calling Method</h2><span class="alert">${e}</span>`;
             }
             addBackHome();
+        }
+
+        function renderPatientDetails(value) {
+            getConsole().innerHTML = `<h2>Patient details</h2>`;
+            returnObject = ABI.find( method => method.name === 'patienten');
+            returnObject.outputs.forEach( (output, index) => {
+                getConsole().innerHTML += `<strong>${output.name}</strong><br/>&gt;&gt;&gt;${value[index] ? value[index] : '<span class="alert alert--inline">N/A</span>'}<br/>`;
+            });
         }
 
         function renderPatientenListe(value) {
@@ -428,8 +441,8 @@ function go(showAll = false) {
             });
         }
 
-        function renderUnformatted(value) {
-            getConsole().innerHTML = `<h2>Result of ${canonicalMethodName}</h2>${value}`;
+        function renderUnformatted(value, canonicalMethodName) {
+            getConsole().innerHTML = `<h2>Result of ${canonicalMethodName}</h2><pre>${JSON.stringify(value, 3)}</pre>`;
         }
 
         async function prepareTransaction(canonicalMethodName) {
